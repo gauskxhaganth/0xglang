@@ -1,0 +1,22 @@
+cabinet main
+require "fmt"
+
+class Employee
+    base_salary Int
+    allowance   Int
+
+    // 3. Using multiple @vars in math / calculation
+    def total_salary() Int
+        let total = @base_salary + @allowance
+        return total
+    end
+end
+
+def main()
+    let e = Employee{
+        base_salary: 5000000,
+        allowance:   1500000,
+    }
+    let total = e.total_salary()
+    fmt::Println("Total Employee Salary:", total)
+end

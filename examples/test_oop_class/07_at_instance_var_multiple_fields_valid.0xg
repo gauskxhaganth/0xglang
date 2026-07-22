@@ -1,0 +1,30 @@
+cabinet main
+require "fmt"
+
+class UserProfile
+    name  String
+    age   Int
+    email String
+
+    // 4. Reading and mutating multiple @vars across methods
+    def display()
+        fmt::Println("Name :", @name)
+        fmt::Println("Age  :", @age)
+        fmt::Println("Email:", @email)
+    end
+
+    def birthday()
+        @age = @age + 1
+        fmt::Println("Happy birthday! Current age:", @age)
+    end
+end
+
+def main()
+    let p = UserProfile{
+        name:  "Alice",
+        age:   24,
+        email: "alice@0xg.lang",
+    }
+    p.display()
+    p.birthday()
+end

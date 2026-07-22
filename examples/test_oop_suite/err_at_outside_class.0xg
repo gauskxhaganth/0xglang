@@ -1,0 +1,7 @@
+cabinet main
+require "fmt"
+
+// ERROR: Using '@' outside of a class method is forbidden
+def main()
+    fmt.Println(@name)
+end

@@ -1,0 +1,31 @@
+cabinet main
+
+require "fmt"
+require "github.com/gofiber/fiber/v2"
+
+class Server
+    app *fiber::App
+end
+
+// Receiver using pointer (*Server) because class is a reference type (Heap allocated)
+def (s *Server) start()
+    s.app.Get("/", helloHandler)
+    fmt::Println("Server (Class version) is running on port 3000...")
+    s.app.Listen(":3000")
+end
+
+def helloHandler(c *fiber::Ctx) error
+    // Using . for instance method of object 'c'
+    return c.SendString("Hello from the Class version!")
+end
+
+def main()
+    // 1. USING :: -> fiber::New() calls a function from the fiber namespace
+    // 2. USING &  -> Because Server is a class, it requires a reference
+    let s = &Server{
+        app: fiber::New(),
+    }
+    
+    // 3. USING . -> start() is an instance method of object 's'
+    s.start()
+end

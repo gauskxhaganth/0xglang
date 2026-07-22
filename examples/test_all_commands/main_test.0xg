@@ -1,0 +1,7 @@
+cabinet main
+
+require "testing"
+
+def TestMain(t testing.T)
+    // pass
+end

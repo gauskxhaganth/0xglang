@@ -1,0 +1,22 @@
+cabinet main
+require "fmt"
+
+class User
+    name String
+
+    // 2. Mutating / assigning to instance variable @name
+    def rename(new_name String)
+        @name = new_name
+    end
+
+    def print()
+        fmt::Println("Name after update:", @name)
+    end
+end
+
+def main()
+    let u = User{name: "Bob Initial"}
+    u.print()
+    u.rename("Bob Updated")
+    u.print()
+end

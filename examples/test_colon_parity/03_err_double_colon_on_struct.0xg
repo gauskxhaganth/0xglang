@@ -1,0 +1,15 @@
+cabinet main
+require "fmt"
+
+struct User
+    name String
+end
+
+def (u User) greet()
+end
+
+def main()
+    let u = User{name: "Bob"}
+    // ERROR: Using '.' on a struct is forbidden. Must use '.' instead
+    u.greet()
+end

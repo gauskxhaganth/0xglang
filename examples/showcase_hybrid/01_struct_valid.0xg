@@ -1,0 +1,25 @@
+cabinet main
+
+require
+    "fmt"
+    "strings"
+retain
+
+struct User
+    name String
+    age Int
+end
+
+def (u User) greet()
+    // Struct style: MUST use dot (.) for namespace and method
+    let upperName = strings.ToUpper(u.name)
+    fmt.Println("Hello, I am", upperName, "and I am", u.age, "years old.")
+end
+
+def main()
+    let user = User{
+        name: "Budi",
+        age: 30,
+    }
+    user.greet()
+end

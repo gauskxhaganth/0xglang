@@ -1,0 +1,4 @@
+cabinet main
+def main()
+    let x string = "test"
+end

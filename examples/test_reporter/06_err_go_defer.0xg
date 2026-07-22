@@ -1,0 +1,6 @@
+cabinet main
+
+def run()
+    let a = 1
+    go a
+end

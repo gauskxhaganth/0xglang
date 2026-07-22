@@ -1,0 +1,7 @@
+cabinet main
+
+require "fmt"
+
+def main()
+    fmt.Println("Hello, world!")
+end

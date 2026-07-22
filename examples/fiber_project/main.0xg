@@ -1,0 +1,27 @@
+cabinet main
+
+require "fmt"
+require "github.com/gofiber/fiber/v2"
+
+class Server
+    app *fiber::App
+end
+
+def (s *Server) Start()
+    fmt::Println("Starting server...")
+    s.app.Listen(":3000")
+end
+
+def helloHandler(c *fiber::Ctx) error
+    return c.SendString("Hello from 0xg powered Fiber!")
+end
+
+def main()
+    let s = &Server{
+        app: fiber::New(),
+    }
+    
+    s.app.Get("/", helloHandler)
+    
+    fmt::Println("Test setup completed successfully.")
+end

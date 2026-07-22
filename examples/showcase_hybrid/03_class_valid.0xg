@@ -1,0 +1,26 @@
+cabinet main
+
+require
+    "fmt"
+    "strings"
+retain
+
+class User
+    name String
+    age Int
+
+    def greet()
+        // Class style: Using :: for namespace, @ for instance variable
+        let upperName = strings::ToUpper(@name)
+        fmt::Println("Hello, I am", upperName, "and I am", @age, "years old.")
+    end
+end
+
+def main()
+    let user = User{
+        name: "Siska",
+        age: 25,
+    }
+    // Using dot (.) to call the instance method on object
+    user.greet()
+end

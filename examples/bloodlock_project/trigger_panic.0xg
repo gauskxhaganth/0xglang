@@ -1,0 +1,6 @@
+cabinet main
+require "fmt"
+def main()
+    let x = Array(Int){}
+    fmt.Println(x[2])
+end

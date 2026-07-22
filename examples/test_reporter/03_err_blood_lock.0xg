@@ -1,0 +1,8 @@
+cabinet main
+
+def run()
+    let err = nil
+    if err != nil
+        // forbidden
+    end
+end

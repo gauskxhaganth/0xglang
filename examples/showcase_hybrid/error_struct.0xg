@@ -1,0 +1,10 @@
+cabinet main
+
+require "fmt"
+
+struct 
+    name String
+end
+
+def main()
+end

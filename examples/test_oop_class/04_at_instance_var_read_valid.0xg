@@ -1,0 +1,16 @@
+cabinet main
+require "fmt"
+
+class Person
+    name String
+
+    // 1. Reading instance variable @name
+    def greet()
+        fmt::Println("Hello, my name is:", @name)
+    end
+end
+
+def main()
+    let p = Person{name: "Alice Read @var"}
+    p.greet()
+end

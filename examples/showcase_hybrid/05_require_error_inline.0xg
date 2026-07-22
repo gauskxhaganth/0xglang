@@ -1,0 +1,8 @@
+cabinet main
+
+// ERROR: Inline require with retain is BANNED
+require "fmt" retain
+
+def main()
+    fmt.Println("This should fail")
+end

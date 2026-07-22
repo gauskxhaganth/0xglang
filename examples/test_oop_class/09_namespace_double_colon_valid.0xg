@@ -1,0 +1,10 @@
+cabinet main
+
+require "fmt"
+
+class Dummy
+end
+
+def main()
+    fmt::Println("Package namespace fmt::Println works!")
+end

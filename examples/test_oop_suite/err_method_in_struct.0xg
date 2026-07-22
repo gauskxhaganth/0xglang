@@ -1,0 +1,10 @@
+cabinet main
+
+struct User
+    name String
+    def greet()
+    end
+end
+
+def main()
+end

@@ -1,0 +1,16 @@
+cabinet main
+require "fmt"
+
+struct User
+    name String
+end
+
+// Struct method declared outside with explicit receiver
+def (u User) greet()
+    fmt.Println("Hello from Struct Receiver:", u.name)
+end
+
+def main()
+    let u = User{name: "Alice Struct Receiver"}
+    u.greet()
+end

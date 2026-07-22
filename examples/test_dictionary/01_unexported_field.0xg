@@ -1,0 +1,9 @@
+cabinet main
+
+struct Person
+    name String
+end
+
+def main()
+    let p = Person{name: "Alice"}
+end

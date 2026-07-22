@@ -1,0 +1,15 @@
+cabinet main
+require "fmt"
+
+class Parent
+    id Int
+end
+
+class Child < Parent
+    name String
+end
+
+def main()
+    let c = Child{name: "Bob Class Inheritance"}
+    fmt::Println("Child Name:", c.name)
+end

@@ -1,0 +1,6 @@
+cabinet main
+def main()
+    let err = nil
+    if err != nil
+    end
+end

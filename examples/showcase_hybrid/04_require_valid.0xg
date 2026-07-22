@@ -1,0 +1,13 @@
+cabinet main
+
+// CORRECT: Multi-line block for multiple imports requires 'retain' at the end
+require
+    "fmt"
+retain
+
+// CORRECT: Single line without retain for single import
+require "math"
+
+def main()
+    fmt.Println("Math Pi:", math.Pi)
+end

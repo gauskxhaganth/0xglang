@@ -1,0 +1,9 @@
+cabinet main
+
+require "fmt"
+
+class User
+    def greet()
+        fmt::Println(@)
+    end
+end

@@ -1,0 +1,6 @@
+cabinet main
+
+def main()
+    // ERROR: ':=' (Go short declaration) is forbidden in 0xg
+    x := 100
+end

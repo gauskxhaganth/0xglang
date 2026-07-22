@@ -1,0 +1,18 @@
+cabinet main
+require "fmt"
+
+def main()
+    // A. Single Colon ':' for Map Key-Value
+    let m = Map(String, Int){
+        "one": 100,
+        "two": 200,
+    }
+
+    // B. Single Colon ':' for Array Slicing [1:3]
+    let list = Array(Int){10, 20, 30, 40, 50}
+    let sub = list[1:3]
+
+    // C. Double Colon '.' for Package Namespace fmt.Println
+    fmt.Println("1. Slice list[1:3]:", sub)
+    fmt.Println("2. Map Key:Value   :", m["one"])
+end

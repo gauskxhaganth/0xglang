@@ -1,0 +1,11 @@
+cabinet main
+require "fmt"
+
+class User
+    name String
+end
+
+def main()
+    let u = User{name: "Alice Class Basic"}
+    fmt::Println("Class User:", u.name)
+end

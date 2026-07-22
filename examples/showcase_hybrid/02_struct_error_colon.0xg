@@ -1,0 +1,14 @@
+cabinet main
+
+require
+    "fmt"
+retain
+
+struct User
+    name String
+end
+
+def main()
+    // ERROR: '::' is forbidden in struct-style files!
+    fmt::Println("Trying to use double colon in a struct file!")
+end

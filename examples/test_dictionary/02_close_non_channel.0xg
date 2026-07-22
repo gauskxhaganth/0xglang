@@ -1,0 +1,6 @@
+cabinet main
+
+def main()
+    let a = 1
+    close(a)
+end

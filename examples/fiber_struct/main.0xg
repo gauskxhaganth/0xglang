@@ -1,0 +1,33 @@
+cabinet main
+
+require
+    "fmt"
+    "github.com/gofiber/fiber/v2"
+retain
+
+struct Server
+    app *fiber.App
+end
+
+// Receiver does NOT use a pointer because struct is passed by value (Stack allocated)
+def (s Server) start()
+    s.app.Get("/", helloHandler)
+    fmt.Println("Server (Struct version) is running on port 3001...")
+    s.app.Listen(":3001")
+end
+
+def helloHandler(c *fiber.Ctx) error
+    // Using . for instance method of object 'c'
+    return c.SendString("Hello from the Struct version!")
+end
+
+def main()
+    // 1. USING . -> fiber.New() calls a function from the fiber namespace
+    // 2. NO & USED -> Because Server is a struct (value type), we instantiate it directly
+    let s = Server{
+        app: fiber.New(),
+    }
+    
+    // 3. USING . -> start() is an instance method of object 's'
+    s.start()
+end

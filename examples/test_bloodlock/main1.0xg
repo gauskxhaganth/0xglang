@@ -1,0 +1,3 @@
+cabinet main
+require "fmt"
+require "math"

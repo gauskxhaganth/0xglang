@@ -1,0 +1,4 @@
+cabinet main
+require
+	"fmt"
+retain

@@ -1,0 +1,3 @@
+cabinet main
+type Data struct
+end

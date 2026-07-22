@@ -1,0 +1,17 @@
+cabinet main
+require "fmt"
+
+struct Parent
+    id Int
+end
+
+struct Child
+    Parent
+    name String
+end
+
+def main()
+    let c = Child{name: "Bob Struct Embedding"}
+    fmt.Println("Parent field:", c.id)
+    fmt.Println("Child field:", c.name)
+end

@@ -1,0 +1,10 @@
+cabinet main
+
+struct Parent
+end
+
+struct Child < Parent
+end
+
+def main()
+end

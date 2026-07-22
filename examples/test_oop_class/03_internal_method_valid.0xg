@@ -1,0 +1,15 @@
+cabinet main
+require "fmt"
+
+class User
+    name String
+
+    def greet()
+        fmt::Println("Internal class method works!")
+    end
+end
+
+def main()
+    let u = User{name: "Alice"}
+    u.greet()
+end

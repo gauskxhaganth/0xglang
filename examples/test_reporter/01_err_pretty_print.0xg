@@ -1,0 +1,9 @@
+cabinet main
+
+// End-to-End test to verify the Error Reporter display
+def main()
+    let data = 10
+    
+    // ERROR: Do not use :=
+    data := 20
+end
