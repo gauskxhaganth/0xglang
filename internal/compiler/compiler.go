@@ -8,10 +8,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"zerouge/internal/codegen"
-	"zerouge/internal/mod"
-	"zerouge/internal/parser"
-	"zerouge/internal/token"
+	"orez/internal/codegen"
+	"orez/internal/mod"
+	"orez/internal/parser"
+	"orez/internal/token"
 )
 
 // RunSource executes 0xg source code and streams STDOUT to writer.

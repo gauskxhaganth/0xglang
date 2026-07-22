@@ -23,7 +23,7 @@ def main()
     let p = UserProfile{
         name:  "Alice",
         age:   24,
-        email: "alice@0xg.lang",
+        email: "alice@orez.lang",
     }
     p.display()
     p.birthday()

@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/pelletier/go-toml/v2"
 	"golang.org/x/mod/modfile"
@@ -24,10 +26,19 @@ type ModuleConfig struct {
 
 // InitMod di-invoke oleh `0xg mod init <module_name>`
 func InitMod(name string) error {
+	v := runtime.Version()
+	if strings.HasPrefix(v, "go") {
+		v = v[2:]
+	}
+	parts := strings.Split(v, ".")
+	if len(parts) >= 2 {
+		v = parts[0] + "." + parts[1]
+	}
+
 	cfg := Config{
 		Module: ModuleConfig{
 			Name: name,
-			Go:   "1.21", // default Go version
+			Go:   v,
 		},
 	}
 

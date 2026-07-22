@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 	"unicode"
-	"zerouge/internal/ast"
-	"zerouge/internal/token"
+	"orez/internal/ast"
+	"orez/internal/token"
 )
 
 type Transpiler struct {

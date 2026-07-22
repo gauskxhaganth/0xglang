@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"zerouge/internal/compiler"
-	"zerouge/internal/mod"
-	"zerouge/internal/reporter"
+	"orez/internal/compiler"
+	"orez/internal/mod"
+	"orez/internal/reporter"
 )
 
 func main() {
@@ -64,13 +64,13 @@ func main() {
 			if len(parts) >= 4 {
 				goVer := parts[2]
 				osArch := parts[3]
-				fmt.Printf("\033[36mZEROgue|0xg v0.0.3\033[0m\n")
+				fmt.Printf("\033[36mOrez v0.0.3\033[0m\n")
 				fmt.Printf("\033[31mMachine: %s\033[0m\n", goVer)
-				fmt.Printf("Use-in: %s\n", osArch)
+				fmt.Printf("Use-on: %s\n", osArch)
 				return
 			}
 		}
-		fmt.Printf("\033[36mZEROgue|0xg v0.0.3\033[0m\n")
+		fmt.Printf("\033[36mOrez v0.0.3\033[0m\n")
 		return
 	}
 
@@ -199,6 +199,15 @@ func main() {
 	if goCmd == "project" {
 		goCmd = "mod"
 	}
+	if goCmd == "help" && len(args) > 0 {
+		if args[0] == "project" {
+			args[0] = "mod"
+		} else if args[0] == "projects" {
+			args[0] = "modules"
+		} else if args[0] == "project-auth" {
+			args[0] = "module-auth"
+		}
+	}
 	cmd := exec.Command("go", append([]string{goCmd}, args...)...)
 	
 	cmd.Stdout = outWriter
@@ -242,6 +251,18 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 	s = strings.ReplaceAll(s, "go bug", "0xg bug")
 	s = strings.ReplaceAll(s, "go version", "0xg version")
 	s = strings.ReplaceAll(s, "go telemetry", "0xg telemetry")
+
+	s = strings.ReplaceAll(s, "golang.org", "0xg.org")
+	s = strings.ReplaceAll(s, "GOPROXY", "0XGPROXY")
+	s = strings.ReplaceAll(s, "GOSUMDB", "0XGSUMDB")
+	s = strings.ReplaceAll(s, "GOPRIVATE", "0XGPRIVATE")
+	s = strings.ReplaceAll(s, "Go team", "0xg team")
+	s = strings.ReplaceAll(s, "golang", "0xg")
+	
+	s = strings.ReplaceAll(s, "Modules", "Projects")
+	s = strings.ReplaceAll(s, "modules", "projects")
+	s = strings.ReplaceAll(s, "Module", "Project")
+	s = strings.ReplaceAll(s, "module", "project")
 
 	if strings.HasPrefix(s, "go ") {
 		s = "0xg " + s[3:]
@@ -333,7 +354,7 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 }
 
 func printHelp() {
-	fmt.Println("0xg is a transparent proxy and transpiler for Go (Zerouge).")
+	fmt.Println("0xg is a transparent proxy and transpiler for Go (Orez).")
 	fmt.Println("\nUsage:")
 	fmt.Println("\t0xg <command> [arguments]")
 	fmt.Println("\n0xg fully inherits and wraps the standard Go toolchain.")

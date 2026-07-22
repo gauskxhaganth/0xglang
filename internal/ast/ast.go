@@ -1,6 +1,6 @@
 package ast
 
-import "zerouge/internal/token"
+import "orez/internal/token"
 
 // Node is the base interface for all AST nodes
 type Node interface {

@@ -10,7 +10,7 @@ package scanner
 import (
 	"bytes"
 	"fmt"
-	"zerouge/internal/token"
+	"orez/internal/token"
 	"path/filepath"
 	"strconv"
 	"unicode"

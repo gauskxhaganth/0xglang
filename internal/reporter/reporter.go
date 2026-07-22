@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 	"strings"
-	"zerouge/internal/scanner"
+	"orez/internal/scanner"
 )
 
 // ANSI Color Codes

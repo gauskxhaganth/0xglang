@@ -1,3 +1,5 @@
-# 0xg
+# OREZ LANG
 
-ZEROuge Programming Language | 0xg
+## Orez Programming Language | 0xg
+
+### https://orez.web.id

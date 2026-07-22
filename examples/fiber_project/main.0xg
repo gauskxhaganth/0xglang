@@ -13,7 +13,7 @@ def (s *Server) Start()
 end
 
 def helloHandler(c *fiber::Ctx) error
-    return c.SendString("Hello from 0xg powered Fiber!")
+    return c.SendString("Hello from orez powered Fiber!")
 end
 
 def main()

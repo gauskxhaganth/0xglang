@@ -2,8 +2,8 @@ package parser
 
 import (
 	"testing"
-	"zerouge/internal/ast"
-	"zerouge/internal/token"
+	"orez/internal/ast"
+	"orez/internal/token"
 )
 
 // Uji Peluru Pelacak (Tracer Bullet): Memastikan Parser mampu membaca 'cabinet main'

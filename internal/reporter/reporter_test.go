@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
-	"zerouge/internal/scanner"
-	"zerouge/internal/token"
+	"orez/internal/scanner"
+	"orez/internal/token"
 )
 
 func TestFprettyPrintError_ScannerErrorList(t *testing.T) {

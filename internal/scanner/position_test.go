@@ -2,7 +2,7 @@ package scanner
 
 import (
 	"testing"
-	"zerouge/internal/token"
+	"orez/internal/token"
 )
 
 func TestScannerPositionTracking(t *testing.T) {

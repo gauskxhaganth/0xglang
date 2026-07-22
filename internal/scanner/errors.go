@@ -6,7 +6,7 @@ package scanner
 
 import (
 	"fmt"
-	"zerouge/internal/token"
+	"orez/internal/token"
 	"io"
 	"sort"
 )

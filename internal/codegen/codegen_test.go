@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"strings"
 	"testing"
-	"zerouge/internal/parser"
-	"zerouge/internal/token"
+	"orez/internal/parser"
+	"orez/internal/token"
 )
 
 func TestTranspileBasic(t *testing.T) {

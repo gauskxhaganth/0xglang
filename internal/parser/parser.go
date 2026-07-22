@@ -2,9 +2,9 @@ package parser
 
 import (
 	"fmt"
-	"zerouge/internal/ast"
-	"zerouge/internal/scanner"
-	"zerouge/internal/token"
+	"orez/internal/ast"
+	"orez/internal/scanner"
+	"orez/internal/token"
 )
 
 type prefixParseFn func() ast.Expr
