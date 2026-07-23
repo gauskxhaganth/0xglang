@@ -97,6 +97,25 @@ func (t *Transpiler) genFile(node *ast.File) error {
 func (t *Transpiler) genDecl(node ast.Decl) {
 	switch d := node.(type) {
 	case *ast.FuncDecl:
+		if d.Recv != nil && len(d.Recv.List) > 0 {
+			for _, field := range d.Recv.List {
+				if field.Name != nil {
+					if ident, ok := field.Type.(*ast.Ident); ok {
+						t.varTypes[field.Name.Name] = ident.Name
+					}
+				}
+			}
+		}
+		if d.Type != nil && d.Type.Params != nil {
+			for _, field := range d.Type.Params.List {
+				if field.Name != nil {
+					if ident, ok := field.Type.(*ast.Ident); ok {
+						t.varTypes[field.Name.Name] = ident.Name
+					}
+				}
+			}
+		}
+		
 		t.write("func ")
 		if d.Recv != nil && len(d.Recv.List) > 0 {
 			t.write("(")
@@ -112,7 +131,7 @@ func (t *Transpiler) genDecl(node ast.Decl) {
 			t.write(") ")
 		}
 		funcName := d.Name.Name
-		if d.Recv != nil {
+		if funcName != "main" && funcName != "init" {
 			funcName = capitalize(funcName)
 		}
 		t.write("%s(", funcName)
@@ -315,7 +334,7 @@ func (t *Transpiler) genStmt(node ast.Stmt) {
 		}
 		t.genBlockStmt(s.Body)
 	case *ast.WhileStmt:
-		t.write("for ") // 0xg 'while' menjadi Go 'for' murni
+		t.write("for ") // 0xg 'while' becomes pure Go 'for'
 		if ident, ok := s.Cond.(*ast.Ident); ok && ident.Name == "err" {
 			t.write("err != nil ")
 		} else if prefix, ok := s.Cond.(*ast.PrefixExpr); ok && prefix.Operator == "!" {

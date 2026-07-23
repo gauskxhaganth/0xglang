@@ -36,7 +36,7 @@ func RunSourceFile(filename string, src []byte, out io.Writer, args ...string) e
 
 	tmpDir, err := os.MkdirTemp("", "0xg_*")
 	if err != nil {
-		return fmt.Errorf("gagal membuat direktori sementara: %v", err)
+		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 	defer os.RemoveAll(tmpDir)
 
@@ -46,7 +46,7 @@ func RunSourceFile(filename string, src []byte, out io.Writer, args ...string) e
 	goFilePath := filepath.Join(tmpDir, "main.go")
 	err = os.WriteFile(goFilePath, goSource.Bytes(), 0644)
 	if err != nil {
-		return fmt.Errorf("gagal menulis transpilasi: %v", err)
+		return fmt.Errorf("failed to write transpilation: %v", err)
 	}
 
 	// Change execution from `go run main.go` to `go run .` if the module is initialized,
@@ -89,7 +89,7 @@ func BuildSourceFile(filename string, src []byte, out io.Writer, outputBinary st
 
 	tmpDir, err := os.MkdirTemp("", "0xg_*")
 	if err != nil {
-		return fmt.Errorf("gagal membuat direktori sementara: %v", err)
+		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 	defer os.RemoveAll(tmpDir)
 
@@ -99,7 +99,7 @@ func BuildSourceFile(filename string, src []byte, out io.Writer, outputBinary st
 	goFilePath := filepath.Join(tmpDir, "main.go")
 	err = os.WriteFile(goFilePath, goSource.Bytes(), 0644)
 	if err != nil {
-		return fmt.Errorf("gagal menulis transpilasi: %v", err)
+		return fmt.Errorf("failed to write transpilation: %v", err)
 	}
 
 	cmdArgs := []string{"build", "-o", outputBinary}
@@ -126,7 +126,7 @@ func BuildSourceFile(filename string, src []byte, out io.Writer, outputBinary st
 func ExecWorkspace(command string, args []string, out io.Writer, errOut io.Writer) error {
 	tmpDir, err := os.MkdirTemp("", "0xg_*")
 	if err != nil {
-		return fmt.Errorf("gagal membuat direktori sementara: %v", err)
+		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 	defer os.RemoveAll(tmpDir)
 

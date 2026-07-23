@@ -1,0 +1,17 @@
+cabinet main
+
+require "fmt"
+
+struct Employee
+    id   Int
+    name String
+end
+
+def (e Employee) PrintInfo()
+    fmt.Println("Employee ID:", e.id, "- Name:", e.name)
+end
+
+def main()
+    let emp = Employee{id: 101, name: "Bob"}
+    emp.PrintInfo()
+end

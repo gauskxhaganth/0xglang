@@ -28,7 +28,7 @@ func TestTranspileBasic(t *testing.T) {
 	result := buf.String()
 	
 	if strings.TrimSpace(result) != strings.TrimSpace(expected) {
-		t.Errorf("FASE MERAH: Transpilasi tidak sesuai.\nHarapan:\n%s\n--- \nHasil:\n%s", expected, result)
+		t.Errorf("RED PHASE: Transpilation mismatch.\nExpected:\n%s\n--- \nResult:\n%s", expected, result)
 	}
 }
 
@@ -52,7 +52,7 @@ func TestTranspileControlBlocks(t *testing.T) {
 	result := buf.String()
 
 	if strings.TrimSpace(result) != strings.TrimSpace(expectedGo) {
-		t.Errorf("FASE MERAH: Transpilasi If/While tidak sesuai.\nHarapan:\n%s\n---\nHasil:\n%s", expectedGo, result)
+		t.Errorf("RED PHASE: If/While transpilation mismatch.\nExpected:\n%s\n---\nResult:\n%s", expectedGo, result)
 	}
 }
 
@@ -76,6 +76,6 @@ func TestTranspileMathExpr(t *testing.T) {
 	result := buf.String()
 
 	if strings.TrimSpace(result) != strings.TrimSpace(expectedGo) {
-		t.Errorf("FASE MERAH: Transpilasi Math Expr tidak sesuai.\nHarapan:\n%s\n---\nHasil:\n%s", expectedGo, result)
+		t.Errorf("RED PHASE: Math Expr transpilation mismatch.\nExpected:\n%s\n---\nResult:\n%s", expectedGo, result)
 	}
 }

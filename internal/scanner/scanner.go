@@ -836,9 +836,7 @@ scanAgain:
 		case "var":
 			s.error(s.offset, "FATAL: 'var' is forbidden in 0xg. Use 'let'.")
 			return pos, token.ILLEGAL, lit
-		case "type":
-			s.error(s.offset, "FATAL: 'type' is forbidden in 0xg. Use 'struct', 'class', or 'alias'.")
-			return pos, token.ILLEGAL, lit
+
 		case "switch":
 			s.error(s.offset, "FATAL: 'switch' is forbidden in 0xg. Use 'case' and 'when'.")
 			return pos, token.ILLEGAL, lit

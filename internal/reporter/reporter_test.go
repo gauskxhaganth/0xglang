@@ -12,7 +12,7 @@ import (
 )
 
 func TestFprettyPrintError_ScannerErrorList(t *testing.T) {
-	// Buat file dummy
+	// Create dummy file
 	tmpFile, err := os.CreateTemp("", "test_err_*.0xg")
 	if err != nil {
 		t.Fatal(err)
@@ -53,7 +53,7 @@ func TestFprettyPrintError_ScannerErrorList(t *testing.T) {
 }
 
 func TestFprettyPrintError_CodegenError(t *testing.T) {
-	// Buat file dummy
+	// Create dummy file
 	tmpFile, err := os.CreateTemp("", "test_codegen_*.0xg")
 	if err != nil {
 		t.Fatal(err)

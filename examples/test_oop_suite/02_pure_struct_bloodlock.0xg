@@ -1,0 +1,16 @@
+cabinet main
+require "fmt"
+
+struct Person
+    name String
+end
+
+def (p Person) Greet()
+    // This will trigger Blood Lock because this file is purely struct-style (no classes)
+    fmt::Println("Hello, my name is", p.name)
+end
+
+def main()
+    let p = Person{name: "Alice"}
+    p.Greet()
+end

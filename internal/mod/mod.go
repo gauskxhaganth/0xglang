@@ -1,6 +1,7 @@
 package mod
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -11,6 +12,9 @@ import (
 
 	"github.com/pelletier/go-toml/v2"
 	"golang.org/x/mod/modfile"
+	"orez/internal/codegen"
+	"orez/internal/parser"
+	"orez/internal/token"
 )
 
 type Config struct {
@@ -24,9 +28,17 @@ type ModuleConfig struct {
 	Go      string `toml:"go,omitempty"`
 }
 
-// InitMod di-invoke oleh `0xg mod init <module_name>`
+// InitMod is invoked by `0xg project init <module_name>`
 func InitMod(name string) error {
-	v := runtime.Version()
+	cmd := exec.Command("go", "env", "GOVERSION")
+	out, err := cmd.Output()
+	v := ""
+	if err == nil {
+		v = strings.TrimSpace(string(out))
+	} else {
+		v = runtime.Version()
+	}
+
 	if strings.HasPrefix(v, "go") {
 		v = v[2:]
 	}
@@ -58,12 +70,12 @@ func SyncGoMod(targetDir string, cwd string) error {
 		if os.IsNotExist(err) {
 			return nil // Proceed gracefully if 0xg.toml is missing, simple go run works without mod
 		}
-		return fmt.Errorf("gagal membaca 0xg.toml: %v", err)
+		return fmt.Errorf("failed to read 0xg.toml: %v", err)
 	}
 
 	var cfg Config
 	if err := toml.Unmarshal(data, &cfg); err != nil {
-		return fmt.Errorf("gagal parse 0xg.toml: %v", err)
+		return fmt.Errorf("failed to parse 0xg.toml: %v", err)
 	}
 
 	mf := new(modfile.File)
@@ -86,7 +98,7 @@ func SyncGoMod(targetDir string, cwd string) error {
 		return err
 	}
 
-	// Sinkronisasi 0xg.lock -> go.sum
+	// Synchronize 0xg.lock -> go.sum
 	sumPath := filepath.Join(cwd, "0xg.lock")
 	if sumData, err := os.ReadFile(sumPath); err == nil {
 		os.WriteFile(filepath.Join(targetDir, "go.sum"), sumData, 0644)
@@ -100,7 +112,7 @@ func SyncGoMod(targetDir string, cwd string) error {
 func UpdateTomlFromGoMod(targetDir string, cwd string) error {
 	modData, err := os.ReadFile(filepath.Join(targetDir, "go.mod"))
 	if err != nil {
-		return fmt.Errorf("gagal membaca go.mod hasil generasi: %v", err)
+		return fmt.Errorf("failed to read generated go.mod: %v", err)
 	}
 
 	f, err := modfile.Parse("go.mod", modData, nil)
@@ -137,7 +149,7 @@ func UpdateTomlFromGoMod(targetDir string, cwd string) error {
 		return err
 	}
 
-	// Sinkronisasi go.sum -> 0xg.lock
+	// Synchronize go.sum -> 0xg.lock
 	sumPath := filepath.Join(targetDir, "go.sum")
 	if sumData, err := os.ReadFile(sumPath); err == nil {
 		os.WriteFile(filepath.Join(cwd, "0xg.lock"), sumData, 0644)
@@ -154,6 +166,51 @@ func RunModCommand(args []string, outWriter io.Writer, errWriter io.Writer) erro
 		return err
 	}
 	defer os.RemoveAll(tmpDir)
+
+	// We must transpile .0xg files so go mod tidy can read the actual imports
+	filepath.Walk(cwd, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		relPath, err := filepath.Rel(cwd, path)
+		if err != nil {
+			return nil
+		}
+		if info.IsDir() {
+			name := info.Name()
+			if name == ".git" || name == "target" || name == "blueprint" || name == "bloodlock_project" || name == "test_dictionary" || name == "test_reporter" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		
+		destPath := filepath.Join(tmpDir, relPath)
+		if strings.HasSuffix(info.Name(), ".0xg") {
+			src, err := os.ReadFile(path)
+			if err != nil {
+				return nil
+			}
+			fset := token.NewFileSet()
+			fileNode, err := parser.ParseFile(fset, path, src)
+			if err != nil {
+				return err
+			}
+			var goSource bytes.Buffer
+			transpiler := codegen.NewTranspiler(fset)
+			err = transpiler.Generate(&goSource, fileNode)
+			if err != nil {
+				return err
+			}
+			destPath = strings.TrimSuffix(destPath, ".0xg") + ".go"
+			os.MkdirAll(filepath.Dir(destPath), 0755)
+			os.WriteFile(destPath, goSource.Bytes(), 0644)
+		} else if strings.HasSuffix(info.Name(), ".go") {
+			b, _ := os.ReadFile(path)
+			os.MkdirAll(filepath.Dir(destPath), 0755)
+			os.WriteFile(destPath, b, 0644)
+		}
+		return nil
+	})
 
 	err = SyncGoMod(tmpDir, cwd)
 	if err != nil {

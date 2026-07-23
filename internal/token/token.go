@@ -126,6 +126,7 @@ const (
 	RETURN
 	SELECT
 	STRUCT
+	TYPE
 	WHEN
 	WHILE
 
@@ -239,6 +240,7 @@ var tokens = [...]string{
 	RETURN:      "return",
 	SELECT:      "select",
 	STRUCT:      "struct",
+	TYPE:        "type",
 	WHEN:        "when",
 	WHILE:       "while",
 

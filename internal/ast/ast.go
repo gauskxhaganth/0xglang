@@ -31,7 +31,7 @@ type Ident struct {
 func (x *Ident) Pos() token.Pos { return x.NamePos }
 func (x *Ident) exprNode()      {}
 
-// FieldList merepresentasikan daftar parameter
+// FieldList represents a parameter list
 type FieldList struct {
 	Opening token.Pos
 	List    []*Field
@@ -39,7 +39,7 @@ type FieldList struct {
 }
 func (f *FieldList) Pos() token.Pos { return f.Opening }
 
-// Field merepresentasikan satu parameter
+// Field represents one parameter
 type Field struct {
 	Name *Ident
 	Type Expr
@@ -55,10 +55,10 @@ type FuncType struct {
 func (f *FuncType) Pos() token.Pos { return f.Func }
 func (f *FuncType) exprNode()      {}
 
-// BlockStmt merepresentasikan blok kode yang diakhiri 'end'
+// BlockStmt represents a code block ending with 'end'
 type BlockStmt struct {
 	List []Stmt
-	End  token.Pos // posisi 'end'
+	End  token.Pos // position of 'end'
 }
 func (b *BlockStmt) Pos() token.Pos {
 	if len(b.List) > 0 {
@@ -68,18 +68,18 @@ func (b *BlockStmt) Pos() token.Pos {
 }
 func (b *BlockStmt) stmtNode() {}
 
-// LetStmt merepresentasikan deklarasi variabel (let x = 5)
+// LetStmt represents variable declaration (let x = 5)
 type LetStmt struct {
 	Let   token.Pos
 	Name  *Ident
-	Type  *Ident // Opsional tipe data (misal: let user Pengguna)
+	Type  *Ident // Optional data type (e.g., let user User)
 	Value Expr   // Optional if only a type declaration
 }
 func (l *LetStmt) Pos() token.Pos { return l.Let }
 func (l *LetStmt) stmtNode()      {}
 func (l *LetStmt) declNode()      {}
 
-// BasicLit merepresentasikan literal (angka, string, dll)
+// BasicLit represents literals (numbers, strings, etc.)
 type BasicLit struct {
 	ValuePos token.Pos
 	Kind     token.Token
@@ -127,7 +127,7 @@ func (w *WhileStmt) stmtNode()      {}
 
 // FuncDecl represents a 'def' function declaration
 type FuncDecl struct {
-	Def  token.Pos  // posisi keyword 'def'
+	Def  token.Pos  // position of 'def' keyword
 	Recv *FieldList // receiver (e.g., u User) if any
 	Name *Ident     // function name
 	Type *FuncType  // function type (parameters)
@@ -137,18 +137,18 @@ type FuncDecl struct {
 func (d *FuncDecl) Pos() token.Pos { return d.Def }
 func (d *FuncDecl) declNode()      {}
 
-// File merepresentasikan satu unit file source code 0xg
+// File represents one 0xg source code unit
 type File struct {
-	Cabinet token.Pos // posisi keyword 'cabinet'
-	Name    *Ident    // nama cabinet (package)
-	Decls   []Decl    // daftar deklarasi level atas (seperti def)
+	Cabinet token.Pos // position of 'cabinet' keyword
+	Name    *Ident    // cabinet name (package)
+	Decls   []Decl    // list of top-level declarations (like def)
 }
 
 func (f *File) Pos() token.Pos { return f.Cabinet }
 
 // ExprStmt represents an expression evaluated as a statement (e.g., independent function call)
 type ExprStmt struct {
-	X Expr // Ekspresi itu sendiri
+	X Expr // The expression itself
 }
 func (e *ExprStmt) Pos() token.Pos { return e.X.Pos() }
 func (e *ExprStmt) stmtNode()      {}
@@ -156,18 +156,18 @@ func (e *ExprStmt) stmtNode()      {}
 // CallExpr represents a function call
 type CallExpr struct {
 	Fun    Expr      // Function name or expression
-	Lparen token.Pos // Posisi '('
-	Args   []Expr    // Daftar argumen
-	Rparen token.Pos // Posisi ')'
+	Lparen token.Pos // Position of '('
+	Args   []Expr    // List of arguments
+	Rparen token.Pos // Position of ')'
 }
 func (c *CallExpr) Pos() token.Pos { return c.Fun.Pos() }
 func (c *CallExpr) exprNode()      {}
 
-// RequireDecl merepresentasikan impor paket (require "fmt" retain)
+// RequireDecl represents package import (require "fmt" retain)
 type RequireDecl struct {
-	Require token.Pos   // Posisi 'require'
+	Require token.Pos   // Position of 'require'
 	Pkgs    []*BasicLit // Packages (e.g., "fmt", "os")
-	Retain  token.Pos // Posisi 'retain'
+	Retain  token.Pos // Position of 'retain'
 }
 func (r *RequireDecl) Pos() token.Pos { return r.Require }
 func (r *RequireDecl) declNode()      {}
@@ -182,7 +182,7 @@ type SelectorExpr struct {
 func (s *SelectorExpr) Pos() token.Pos { return s.X.Pos() }
 func (s *SelectorExpr) exprNode()      {}
 
-// ReturnStmt merepresentasikan pengembalian nilai (return)
+// ReturnStmt represents value return (return)
 type ReturnStmt struct {
 	Return  token.Pos
 	Results []Expr
@@ -190,7 +190,7 @@ type ReturnStmt struct {
 func (r *ReturnStmt) Pos() token.Pos { return r.Return }
 func (r *ReturnStmt) stmtNode()      {}
 
-// TypeDecl merepresentasikan deklarasi tipe data (seperti struct)
+// TypeDecl represents data type declaration (like struct)
 type TypeDecl struct {
 	Type     token.Pos
 	Name     *Ident
@@ -199,7 +199,7 @@ type TypeDecl struct {
 func (t *TypeDecl) Pos() token.Pos { return t.Type }
 func (t *TypeDecl) declNode()      {}
 
-// StructType merepresentasikan bentuk tipe struct
+// StructType represents struct type shape
 type StructType struct {
 	Struct token.Pos
 	Fields *FieldList
@@ -207,7 +207,7 @@ type StructType struct {
 func (s *StructType) Pos() token.Pos { return s.Struct }
 func (s *StructType) exprNode()      {}
 
-// ClassDecl merepresentasikan deklarasi kelas ala Ruby/Crystal (Heap / Pointer Type)
+// ClassDecl represents Ruby/Crystal style class declaration (Heap / Pointer Type)
 type ClassDecl struct {
 	Class   token.Pos
 	Name    *Ident
@@ -218,7 +218,7 @@ type ClassDecl struct {
 func (c *ClassDecl) Pos() token.Pos { return c.Class }
 func (c *ClassDecl) declNode()      {}
 
-// AtExpr merepresentasikan ekspresi @ident (instance variable)
+// AtExpr represents @ident expression (instance variable)
 type AtExpr struct {
 	At   token.Pos
 	Name *Ident
@@ -226,7 +226,7 @@ type AtExpr struct {
 func (a *AtExpr) Pos() token.Pos { return a.At }
 func (a *AtExpr) exprNode()      {}
 
-// AssignStmt merepresentasikan penugasan ulang (mutasi murni tanpa let)
+// AssignStmt represents reassignment (pure mutation without let)
 type AssignStmt struct {
 	Left   Expr
 	TokPos token.Pos
@@ -236,7 +236,7 @@ type AssignStmt struct {
 func (a *AssignStmt) Pos() token.Pos { return a.Left.Pos() }
 func (a *AssignStmt) stmtNode()      {}
 
-// CompositeLit merepresentasikan inisialisasi nilai komposit
+// CompositeLit represents composite value initialization
 type CompositeLit struct {
 	Type   Expr
 	Lbrace token.Pos
@@ -251,7 +251,7 @@ func (c *CompositeLit) Pos() token.Pos {
 }
 func (c *CompositeLit) exprNode()      {}
 
-// KeyValueExpr merepresentasikan pasangan kunci: nilai
+// KeyValueExpr represents key: value pair
 type KeyValueExpr struct {
 	Key   Expr
 	Colon token.Pos
@@ -260,7 +260,7 @@ type KeyValueExpr struct {
 func (k *KeyValueExpr) Pos() token.Pos { return k.Key.Pos() }
 func (k *KeyValueExpr) exprNode()      {}
 
-// IndexExpr merepresentasikan akses indeks
+// IndexExpr represents index access
 type IndexExpr struct {
 	X      Expr
 	Lbrack token.Pos
@@ -270,7 +270,7 @@ type IndexExpr struct {
 func (i *IndexExpr) Pos() token.Pos { return i.X.Pos() }
 func (i *IndexExpr) exprNode()      {}
 
-// LoopStmt merepresentasikan perulangan tanpa henti (loop ... end)
+// LoopStmt represents infinite loop (loop ... end)
 type LoopStmt struct {
 	Loop token.Pos
 	Body *BlockStmt
@@ -278,7 +278,7 @@ type LoopStmt struct {
 func (l *LoopStmt) Pos() token.Pos { return l.Loop }
 func (l *LoopStmt) stmtNode()      {}
 
-// ForeachStmt merepresentasikan perulangan rentang data (foreach k, v in data ... end)
+// ForeachStmt represents range loop (foreach k, v in data ... end)
 type ForeachStmt struct {
 	Foreach token.Pos
 	Key     *Ident // Optional, can be nil
@@ -290,16 +290,16 @@ type ForeachStmt struct {
 func (f *ForeachStmt) Pos() token.Pos { return f.Foreach }
 func (f *ForeachStmt) stmtNode()      {}
 
-// SwitchStmt merepresentasikan blok percabangan case ... when ... end
+// SwitchStmt represents case ... when ... end branch block
 type SwitchStmt struct {
 	Case  token.Pos
 	Tag   Expr          // Tag can be nil
-	Body  *BlockStmt    // Body menyimpan kumpulan CaseClause
+	Body  *BlockStmt    // Body stores a collection of CaseClause
 }
 func (s *SwitchStmt) Pos() token.Pos { return s.Case }
 func (s *SwitchStmt) stmtNode()      {}
 
-// CaseClause merepresentasikan klausa when (kondisi) ...
+// CaseClause represents when (condition) ... clause
 type CaseClause struct {
 	When  token.Pos
 	List  []Expr        // Condition list (empty for else/default)
@@ -308,15 +308,15 @@ type CaseClause struct {
 func (c *CaseClause) Pos() token.Pos { return c.When }
 func (c *CaseClause) stmtNode()      {}
 
-// SelectStmt merepresentasikan blok multiplexer select ... when ... end
+// SelectStmt represents multiplexer select ... when ... end block
 type SelectStmt struct {
 	Select token.Pos
-	Body   *BlockStmt // Body menyimpan kumpulan CaseClause
+	Body   *BlockStmt // Body stores a collection of CaseClause
 }
 func (s *SelectStmt) Pos() token.Pos { return s.Select }
 func (s *SelectStmt) stmtNode()      {}
 
-// GoStmt merepresentasikan eksekusi asinkron goroutine
+// GoStmt represents goroutine asynchronous execution
 type GoStmt struct {
 	Go   token.Pos
 	Call *CallExpr
@@ -324,7 +324,7 @@ type GoStmt struct {
 func (g *GoStmt) Pos() token.Pos { return g.Go }
 func (g *GoStmt) stmtNode()      {}
 
-// DeferStmt merepresentasikan penundaan eksekusi
+// DeferStmt represents execution deferment
 type DeferStmt struct {
 	Defer token.Pos
 	Call  *CallExpr

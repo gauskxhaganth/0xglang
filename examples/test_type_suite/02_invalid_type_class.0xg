@@ -1,0 +1,13 @@
+cabinet main
+
+type Animal class
+    @name String
+    
+    def walk()
+        // ...
+    end
+end
+
+def main()
+    // This file will never compile because type + class triggers Blood Lock.
+end

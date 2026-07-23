@@ -6,12 +6,12 @@ import (
 	"testing"
 )
 
-// Uji Lapis 7: Uji Eksekutor Latar Belakang (Compiler Proxy End-to-End)
+// Layer 7 Test: Background Executor Test (Compiler Proxy End-to-End)
 func TestCompilerProxyRun(t *testing.T) {
-	// Skrip murni 0xg
+	// Pure 0xg script
 	src := `cabinet main
 
-require "fmt" retain
+require "fmt"
 
 def main()
 	let result = 15 + 5
@@ -26,7 +26,7 @@ end`
 	}
 }
 
-// Uji Lapis 8: Source Mapping (Compiler Directive //line)
+// Layer 8 Test: Source Mapping (Compiler Directive //line)
 func TestSourceMappingError(t *testing.T) {
 	src := `cabinet main
 def main()
@@ -37,12 +37,12 @@ end`
 	err := RunSource([]byte(src), &out)
 	
 	if err == nil {
-		t.Fatalf("FASE MERAH: Diharapkan gagal kompilasi (Type Error), tapi sukses")
+		t.Fatalf("RED PHASE: Expected compilation to fail (Type Error), but it succeeded")
 	}
 
 	errStr := out.String()
 	if !strings.Contains(errStr, "main.0xg:3") {
-		t.Errorf("FASE MERAH: Pesan error compiler tidak merujuk ke main.0xg:3. Output error: %s", errStr)
+		t.Errorf("RED PHASE: Compiler error message does not point to main.0xg:3. Output error: %s", errStr)
 	}
 }
 
@@ -59,130 +59,130 @@ end`
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi CallExpr. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute CallExpr. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
 	if !strings.Contains(errStr, "30") {
-		t.Errorf("FASE MERAH: Diharapkan mencetak '30', tapi dapat: '%s'", errStr)
+		t.Errorf("RED PHASE: Expected to print '30', got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 10: Interoperabilitas Library (RequireDecl & SelectorExpr)
+// Layer 10 Test: Library Interoperability (RequireDecl & SelectorExpr)
 func TestRequireStmt(t *testing.T) {
 	src := `cabinet main
 
-require "fmt" retain
+require "fmt"
 
 def main()
-	fmt.Println("Halo dari 0xg!")
+	fmt.Println("Hello from 0xg!")
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi RequireDecl. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute RequireDecl. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	if !strings.Contains(errStr, "Halo dari 0xg!") {
-		t.Errorf("FASE MERAH: Diharapkan mencetak 'Halo dari 0xg!', tapi dapat: '%s'", errStr)
+	if !strings.Contains(errStr, "Hello from 0xg!") {
+		t.Errorf("RED PHASE: Expected to print 'Hello from 0xg!', got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 11: Pengembalian Nilai (ReturnStmt)
+// Layer 11 Test: Value Return (ReturnStmt)
 func TestReturnStmt(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
+require "fmt"
 
-def Hitung(a Int, b Int) Int
+def Calculate(a Int, b Int) Int
 	return a * b
 end
 
 def main()
-	let hasil = Hitung(5, 5)
-	fmt.Println(hasil)
+	let result = Calculate(5, 5)
+	fmt.Println(result)
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi ReturnStmt. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute ReturnStmt. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
 	if !strings.Contains(errStr, "25") {
-		t.Errorf("FASE MERAH: Diharapkan mencetak '25', tapi dapat: '%s'", errStr)
+		t.Errorf("RED PHASE: Expected to print '25', got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 12: Deklarasi Objek (Struct)
+// Layer 12 Test: Object Declaration (Struct)
 func TestStructDecl(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
+require "fmt"
 
-struct Pengguna
-	nama String
-	umur Int
+struct User
+	name String
+	age Int
 end
 
 def main()
-	let user Pengguna
-	user.nama = "Budi"
-	user.umur = 30
-	fmt.Println(user.nama, user.umur)
+	let user User
+	user.name = "Budi"
+	user.age = 30
+	fmt.Println(user.name, user.age)
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi Struct. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute Struct. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
 	if !strings.Contains(errStr, "Budi 30") {
-		t.Errorf("FASE MERAH: Diharapkan mencetak 'Budi 30', tapi dapat: '%s'", errStr)
+		t.Errorf("RED PHASE: Expected to print 'Budi 30', got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 13: Struktur Data Dinamis (Array & Map)
+// Layer 13 Test: Dynamic Data Structures (Array & Map)
 func TestDataStructs(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
+require "fmt"
 
 def main()
 	let arr = Array(String){"A", "B", "C"}
-	let kamus = Map(String, Int){"Umur": 30}
+	let dict = Map(String, Int){"Age": 30}
 	
 	arr[0] = "Z"
-	kamus["Skor"] = 100
+	dict["Score"] = 100
 
-	fmt.Println(arr[0], kamus["Umur"], kamus["Skor"])
+	fmt.Println(arr[0], dict["Age"], dict["Score"])
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi Array/Map. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute Array/Map. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
 	if !strings.Contains(errStr, "Z 30 100") {
-		t.Errorf("FASE MERAH: Diharapkan mencetak 'Z 30 100', tapi dapat: '%s'", errStr)
+		t.Errorf("RED PHASE: Expected to print 'Z 30 100', got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 14: Iterasi Kolektif (loop & foreach)
+// Layer 14 Test: Collective Iteration (loop & foreach)
 func TestLoops(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
+require "fmt"
 
 def main()
-	let arr = Array(String){"Satu", "Dua"}
+	let arr = Array(String){"One", "Two"}
 	
 	foreach idx, val in arr
 		fmt.Println(idx, val)
@@ -202,154 +202,154 @@ end`
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi loop/foreach. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute loop/foreach. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	if !strings.Contains(errStr, "0 Satu") || !strings.Contains(errStr, "1 Dua") || !strings.Contains(errStr, "Loop 0") || !strings.Contains(errStr, "Loop 1") {
-		t.Errorf("FASE MERAH: Output iterasi tidak sesuai, didapat: '%s'", errStr)
+	if !strings.Contains(errStr, "0 One") || !strings.Contains(errStr, "1 Two") || !strings.Contains(errStr, "Loop 0") || !strings.Contains(errStr, "Loop 1") {
+		t.Errorf("RED PHASE: Iteration output mismatch, got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 15: Percabangan Banyak Opsi (case & when)
+// Layer 15 Test: Multi-Option Branching (case & when)
 func TestSwitchCase(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
+require "fmt"
 
-def CekAngka(x Int)
+def CheckNum(x Int)
 	case x
 	when 1
-		fmt.Println("Satu")
+		fmt.Println("One")
 	when 2, 3
-		fmt.Println("DuaTiga")
+		fmt.Println("TwoThree")
 	else
-		fmt.Println("Lainnya")
+		fmt.Println("Other")
 	end
 end
 
 def main()
-	CekAngka(1)
-	CekAngka(3)
-	CekAngka(99)
+	CheckNum(1)
+	CheckNum(3)
+	CheckNum(99)
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi case/when. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute case/when. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	if !strings.Contains(errStr, "Satu") || !strings.Contains(errStr, "DuaTiga") || !strings.Contains(errStr, "Lainnya") {
-		t.Errorf("FASE MERAH: Output switch-case tidak sesuai, didapat: '%s'", errStr)
+	if !strings.Contains(errStr, "One") || !strings.Contains(errStr, "TwoThree") || !strings.Contains(errStr, "Other") {
+		t.Errorf("RED PHASE: Switch-case output mismatch, got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 16: Error Handling (Blood Lock Metaprogramming)
+// Layer 16 Test: Error Handling (Blood Lock Metaprogramming)
 func TestErrorHandling(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
-require "errors" retain
+require "fmt"
+require "errors"
 
-def CekError(pemicu Int)
-	let err = errors.New("Bahaya!")
+def CheckError(trigger Int)
+	let err = errors.New("Danger!")
 	
-	if pemicu == 1
+	if trigger == 1
 		err = nil
 	end
 
 	if err
-		fmt.Println("Gagal:", err.Error())
+		fmt.Println("Failed:", err.Error())
 	end
 	
 	if !err
-		fmt.Println("Sukses!")
+		fmt.Println("Success!")
 	end
 end
 
 def main()
-	CekError(0)
-	CekError(1)
+	CheckError(0)
+	CheckError(1)
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi error handling. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute error handling. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	if !strings.Contains(errStr, "Gagal: Bahaya!") || !strings.Contains(errStr, "Sukses!") {
-		t.Errorf("FASE MERAH: Output if err tidak sesuai, didapat: '%s'", errStr)
+	if !strings.Contains(errStr, "Failed: Danger!") || !strings.Contains(errStr, "Success!") {
+		t.Errorf("RED PHASE: If err output mismatch, got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 17: Konkurensi & Memory (go, defer, Channel)
+// Layer 17 Test: Concurrency & Memory (go, defer, Channel)
 func TestConcurrency(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
-require "time" retain
+require "fmt"
+require "time"
 
-def Pekerja(id Int, c Channel(String))
+def Worker(id Int, c Channel(String))
 	time.Sleep(10 * time.Millisecond)
-	c <- "Tugas Selesai"
+	c <- "Task Done"
 end
 
 def main()
 	let c = make(Channel(String))
-	defer fmt.Println("Defer Dieksekusi")
+	defer fmt.Println("Defer Executed")
 	
-	go Pekerja(1, c)
+	go Worker(1, c)
 	
-	let hasil = <-c
-	fmt.Println("Pesan:", hasil)
+	let result = <-c
+	fmt.Println("Message:", result)
 end`
 
 	var out bytes.Buffer
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi konkurensi. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute concurrency. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	// Karena defer dieksekusi di akhir (setelah fungsi selesai), pesan dicetak sebelum/setelah bergantung pada flush, 
-	// namun di Go murni output standar akan menangkap keduanya.
-	if !strings.Contains(errStr, "Pesan: Tugas Selesai") || !strings.Contains(errStr, "Defer Dieksekusi") {
-		t.Errorf("FASE MERAH: Output konkurensi tidak lengkap, didapat: '%s'", errStr)
+	// Because defer is executed at the end (after function finishes), message prints before/after depending on flush, 
+	// but in pure Go standard output will capture both.
+	if !strings.Contains(errStr, "Message: Task Done") || !strings.Contains(errStr, "Defer Executed") {
+		t.Errorf("RED PHASE: Concurrency output incomplete, got: '%s'", errStr)
 	}
 }
 
-// Uji Lapis 18: Konkurensi Lanjutan (Select)
+// Layer 18 Test: Advanced Concurrency (Select)
 func TestSelectStatement(t *testing.T) {
 	src := `cabinet main
-require "fmt" retain
-require "time" retain
+require "fmt"
+require "time"
 
-def Kirim1(c Channel(String))
+def Send1(c Channel(String))
 	time.Sleep(10 * time.Millisecond)
-	c <- "Satu"
+	c <- "One"
 end
 
-def Kirim2(c Channel(String))
+def Send2(c Channel(String))
 	time.Sleep(20 * time.Millisecond)
-	c <- "Dua"
+	c <- "Two"
 end
 
 def main()
 	let c1 = make(Channel(String))
 	let c2 = make(Channel(String))
 
-	go Kirim1(c1)
-	go Kirim2(c2)
+	go Send1(c1)
+	go Send2(c2)
 
 	select
 	when <-c1
-		fmt.Println("Dapat dari c1: Satu")
+		fmt.Println("Got from c1: One")
 	when <-c2
-		fmt.Println("Dapat dari c2: Dua")
+		fmt.Println("Got from c2: Two")
 	when <-time.After(50 * time.Millisecond)
 		fmt.Println("Timeout")
 	end
@@ -359,11 +359,11 @@ end`
 	err := RunSource([]byte(src), &out)
 	
 	if err != nil {
-		t.Fatalf("FASE MERAH: Gagal mengeksekusi select. Error: %v, out: %s", err, out.String())
+		t.Fatalf("RED PHASE: Failed to execute select. Error: %v, out: %s", err, out.String())
 	}
 
 	errStr := out.String()
-	if !strings.Contains(errStr, "Dapat dari c1: Satu") {
-		t.Errorf("FASE MERAH: Output select tidak sesuai, didapat: '%s'", errStr)
+	if !strings.Contains(errStr, "Got from c1: One") {
+		t.Errorf("RED PHASE: Select output mismatch, got: '%s'", errStr)
 	}
 }

@@ -11,7 +11,9 @@ struct ChildGo
 end
 
 def (c ChildGo) greetGo()
-    fmt::Println("Valid Struct (Go-style):", c.name)
+    fmt.Println("Valid Struct (Go-style):", c.name)
+    // fmt.Println juga bisa ditulis fmt::Println karna dia stdlib 
+    // bukan sesuatu yg dihasilkan oleh struct
 end
 
 class ParentRuby

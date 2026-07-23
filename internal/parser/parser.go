@@ -108,7 +108,7 @@ func (p *Parser) parseFuncDecl() *ast.FuncDecl {
 		}
 	}
 
-	if p.tok == token.SEMICOLON { // ASI semicolon setelah baris def myfunc()
+	if p.tok == token.SEMICOLON { // ASI semicolon after line def myfunc()
 		p.next()
 	}
 
@@ -573,7 +573,6 @@ func (p *Parser) parseSelectorExpr(left ast.Expr) ast.Expr {
 
 func (p *Parser) parseRequireDecl() *ast.RequireDecl {
 	pos := p.pos
-	reqLine := p.fset.Position(pos).Line
 	p.next() // consume 'require'
 
 	var pkgs []*ast.BasicLit
@@ -603,14 +602,9 @@ func (p *Parser) parseRequireDecl() *ast.RequireDecl {
 	var retainPos token.Pos
 	if p.tok == token.RETAIN {
 		retainPos = p.pos
-		retLine := p.fset.Position(retainPos).Line
 		p.next() // consume 'retain'
 		if p.tok == token.SEMICOLON {
 			p.next()
-		}
-		
-		if reqLine == retLine {
-			p.error(retainPos, "FATAL: Blood Lock - Inline 'require \"pkg\" retain' is STRICTLY FORBIDDEN. Either use 'require \"pkg\"' without retain, or use a multi-line block.")
 		}
 	} else if len(pkgs) > 1 {
 		p.error(pos, "FATAL: Blood Lock - Multiple packages in a 'require' block is missing retain. Close the block with 'retain' on the last line.")
@@ -632,6 +626,8 @@ func (p *Parser) parseDecl() ast.Decl {
 		return nil
 	case token.REQUIRE:
 		return p.parseRequireDecl()
+	case token.TYPE:
+		return p.parseExplicitTypeDecl()
 	case token.STRUCT:
 		return p.parseTypeDecl()
 	case token.CLASS:
@@ -785,6 +781,46 @@ func (p *Parser) parseTypeDecl() *ast.TypeDecl {
 	name := &ast.Ident{NamePos: p.pos, Name: p.lit}
 	p.next() // consume name
 	
+	return p.parseStructBody(pos, name)
+}
+
+func (p *Parser) parseExplicitTypeDecl() ast.Decl {
+	pos := p.pos
+	p.next() // consume 'type'
+	
+	if p.tok != token.IDENT {
+		p.error(pos, fmt.Sprintf("FATAL: Expected type name after 'type', found '%s'", p.lit))
+		return nil
+	}
+	name := &ast.Ident{NamePos: p.pos, Name: p.lit}
+	p.next() // consume name
+	
+	if p.tok == token.CLASS {
+		p.error(pos, "FATAL: Blood Lock - 'type' is forbidden for 'class'. You cannot mix struct-style types with class-style.")
+		// drain to avoid cascading errors
+		for p.tok != token.END && p.tok != token.EOF { p.next() }
+		p.next()
+		return nil
+	}
+	
+	if p.tok == token.STRUCT {
+		p.next() // consume 'struct'
+		return p.parseStructBody(pos, name)
+	}
+	
+	// Primitive type alias (e.g., type Role Int)
+	typeExpr := p.parseExpr(token.LowestPrec)
+	if p.tok == token.SEMICOLON {
+		p.next()
+	}
+	return &ast.TypeDecl{
+		Type:     pos,
+		Name:     name,
+		TypeExpr: typeExpr,
+	}
+}
+
+func (p *Parser) parseStructBody(pos token.Pos, name *ast.Ident) *ast.TypeDecl {
 	var fields []*ast.Field
 	for p.tok != token.END && p.tok != token.EOF {
 		if p.tok == token.SEMICOLON {

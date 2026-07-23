@@ -20,7 +20,7 @@ func main() {
 
 	command := os.Args[1]
 	if command == "mod" {
-		fmt.Println("0xg: perintah 'mod' tidak berlaku di 0xg, gunakan '0xg project'")
+		fmt.Println("0xg: 'mod' command is not applicable in 0xg, use '0xg project'")
 		os.Exit(1)
 	}
 	
@@ -48,7 +48,12 @@ func main() {
 			i++ // skip the value
 			continue
 		}
-		if strings.HasSuffix(args[i], ".0xg") && sourceFile == "" {
+		if command == "env" && strings.HasPrefix(args[i], "0XG") {
+			args[i] = "GO" + args[i][3:]
+		}
+		if strings.HasPrefix(args[i], "-") {
+			sourceArgs = append(sourceArgs, args[i])
+		} else if strings.HasSuffix(args[i], ".0xg") && sourceFile == "" {
 			sourceFile = args[i]
 		} else {
 			sourceArgs = append(sourceArgs, args[i])
@@ -123,10 +128,10 @@ func main() {
 			moduleName = args[1]
 		}
 		if err := mod.InitMod(moduleName); err != nil {
-			fmt.Printf("Gagal inisialisasi modul: %v\n", err)
+			fmt.Printf("Failed to initialize module: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("0xg: menginisialisasi modul %s di 0xg.toml\n", moduleName)
+		fmt.Printf("0xg: initialized project %s in 0xg.toml\n", moduleName)
 		return
 	}
 
@@ -216,7 +221,7 @@ func main() {
 
 	err := cmd.Run()
 	if err != nil {
-		// Mengembalikan exit code yang senyap tanpa menambah pesan panic/error sampah
+		// Return a silent exit code without adding garbage panic/error messages
 		os.Exit(1)
 	}
 }
@@ -232,7 +237,7 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 	s = strings.ReplaceAll(s, "named files must be .go files", "named files must be .0xg files")
 	s = strings.ReplaceAll(s, ".go file", ".0xg file")
 	
-	// Cermat mengganti 'go command' dsb tanpa merusak regex
+	// Carefully replace 'go command' etc. without breaking regex
 	s = strings.ReplaceAll(s, "go build", "0xg build")
 	s = strings.ReplaceAll(s, "go test", "0xg test")
 	s = strings.ReplaceAll(s, "go run", "0xg run")
@@ -240,6 +245,7 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 	s = strings.ReplaceAll(s, "go vet", "0xg vet")
 	s = strings.ReplaceAll(s, "go doc", "0xg doc")
 	s = strings.ReplaceAll(s, "go env", "0xg env")
+	s = strings.ReplaceAll(s, "Go mod", "0xg project")
 	s = strings.ReplaceAll(s, "go mod", "0xg project")
 	s = strings.ReplaceAll(s, "go get", "0xg get")
 	s = strings.ReplaceAll(s, "go list", "0xg list")
@@ -252,12 +258,35 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 	s = strings.ReplaceAll(s, "go version", "0xg version")
 	s = strings.ReplaceAll(s, "go telemetry", "0xg telemetry")
 
+	versionRe := regexp.MustCompile(`(?m)^0xg version go(1\.\d+(?:\.\d+)?) (\w+/\w+)`)
+	s = versionRe.ReplaceAllString(s, "0xg version v0.1.0 (compatible with go$1) $2")
+
 	s = strings.ReplaceAll(s, "golang.org", "0xg.org")
+	s = strings.ReplaceAll(s, "GOWORK", "0XGWORK")
+	s = strings.ReplaceAll(s, "GOMOD", "0XGMOD")
 	s = strings.ReplaceAll(s, "GOPROXY", "0XGPROXY")
 	s = strings.ReplaceAll(s, "GOSUMDB", "0XGSUMDB")
 	s = strings.ReplaceAll(s, "GOPRIVATE", "0XGPRIVATE")
+	s = strings.ReplaceAll(s, "GOMODCACHE", "0XGMODCACHE")
+	s = strings.ReplaceAll(s, "GOENV", "0XGENV")
+	s = strings.ReplaceAll(s, "GOROOT", "0XGROOT")
+	s = strings.ReplaceAll(s, "GOTOOLDIR", "0XGTOOLDIR")
+	s = strings.ReplaceAll(s, "GOVERSION", "0XGVERSION")
+	s = strings.ReplaceAll(s, "GO111MODULE", "0XG111MODULE")
+	s = strings.ReplaceAll(s, "GOCACHE", "0XGCACHE")
+	
+	envRegex := regexp.MustCompile(`(?m)^GO([A-Z0-9_]+)=`)
+	s = envRegex.ReplaceAllString(s, "0XG$1=")
+	
 	s = strings.ReplaceAll(s, "Go team", "0xg team")
 	s = strings.ReplaceAll(s, "golang", "0xg")
+	
+	// Help text specific replacements
+	s = strings.ReplaceAll(s, "mod         module maintenance", "project     project maintenance")
+	s = strings.ReplaceAll(s, "modules         modules, module versions, and more", "projects        projects, project versions, and more")
+	s = strings.ReplaceAll(s, "module-auth     module authentication", "project-auth    project authentication")
+	s = strings.ReplaceAll(s, "packages        package lists and patterns", "cabinets        cabinet lists and patterns")
+	s = strings.ReplaceAll(s, "packages        cabinet lists and patterns", "cabinets        cabinet lists and patterns")
 	
 	s = strings.ReplaceAll(s, "Modules", "Projects")
 	s = strings.ReplaceAll(s, "modules", "projects")
@@ -288,19 +317,19 @@ func (iw *interceptorWriter) Write(p []byte) (n int, err error) {
 	}
 	s = strings.ReplaceAll(s, "go.mod", "0xg.toml")
 	s = strings.ReplaceAll(s, "go.sum", "0xg.lock")
+	s = strings.ReplaceAll(s, "go.work", "0xg.work")
+	s = strings.ReplaceAll(s, "Go's", "0xg's")
+	s = strings.ReplaceAll(s, "go.dev", "0xg.org")
 	
 	// Help text specific replacements
-	s = strings.ReplaceAll(s, "mod         module maintenance", "project     project maintenance")
-	s = strings.ReplaceAll(s, "modules         modules, module versions, and more", "projects        projects, project versions, and more")
-	s = strings.ReplaceAll(s, "module-auth     module authentication", "project-auth    project authentication")
-	s = strings.ReplaceAll(s, "packages        cabinet lists and patterns", "cabinets        cabinet lists and patterns")
-	s = strings.ReplaceAll(s, "packages        package lists and patterns", "cabinets        cabinet lists and patterns")
 	s = strings.ReplaceAll(s, "packages", "cabinets")
 	s = strings.ReplaceAll(s, "package", "cabinet") // Will catch "cabinet " too, let's be careful
 	s = strings.ReplaceAll(s, "cabinet ", "cabinet ") // no-op, just in case
+	
+	s = strings.ReplaceAll(s, "0xg help mod ", "0xg help project ")
+	s = strings.ReplaceAll(s, "go help mod ", "0xg help project ")
 	s = strings.ReplaceAll(s, "module proxy", "project proxy")
 	s = strings.ReplaceAll(s, "module requirements", "project requirements")
-	s = strings.ReplaceAll(s, "module", "project")
 	s = strings.ReplaceAll(s, "importpath", "requirepath")
 	s = strings.ReplaceAll(s, "import path", "require path")
 	s = strings.ReplaceAll(s, "gofmt", "0xgfmt")

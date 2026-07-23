@@ -205,17 +205,27 @@ func PrintSingleError(w io.Writer, filename string, line, col int, fullMsg strin
 	lines := strings.Split(sourceCode, "\n")
 	
 	if line > 1 && line-2 < len(lines) {
-		prevLine := highlightSyntax(strings.ReplaceAll(lines[line-2], "\t", "    "))
+		prevOrig := lines[line-2]
+		if len(prevOrig) > 80 {
+			prevOrig = prevOrig[:80] + "..."
+		}
+		prevLine := highlightSyntax(strings.ReplaceAll(prevOrig, "\t", "    "))
 		fmt.Fprintf(w, " %s│%s %4d %s│%s %s\n", Blue, Reset, line-1, Blue, Reset, prevLine)
 	}
 
 	if line > 0 && line-1 < len(lines) {
-		errLineStr := highlightSyntax(strings.ReplaceAll(lines[line-1], "\t", "    "))
-		fmt.Fprintf(w, " %s│%s %s%4d%s %s│%s %s\n", Blue, Reset, Bold, line, Reset, Blue, Reset, errLineStr)
+		origLine := lines[line-1]
 		
-		padding := "    "
-		if col > 0 {
-			origLine := lines[line-1]
+		// Setup term width limit
+		const maxLen = 80
+		
+		// If line is too long, we truncate/wrap it
+		if len(origLine) > maxLen {
+			// Print truncated/wrapped version to prevent breaking the border
+			errLineStr := highlightSyntax(strings.ReplaceAll(origLine[:maxLen]+"...", "\t", "    "))
+			fmt.Fprintf(w, " %s│%s %s%4d%s %s│%s %s\n", Blue, Reset, Bold, line, Reset, Blue, Reset, errLineStr)
+			
+			// Adjust col position if it's beyond maxLen
 			visualCol := 0
 			for i := 0; i < col-1 && i < len(origLine); i++ {
 				if origLine[i] == '\t' {
@@ -224,12 +234,37 @@ func PrintSingleError(w io.Writer, filename string, line, col int, fullMsg strin
 					visualCol++
 				}
 			}
-			padding = strings.Repeat(" ", visualCol)
+			
+			if visualCol > maxLen {
+				visualCol = maxLen + 1 // Point to the "..."
+			}
+			
+			padding := strings.Repeat(" ", visualCol)
+			fmt.Fprintf(w, " %s│%s      %s│%s %s%s^^%s\n", Blue, Reset, Blue, Reset, padding, Red, Reset)
+			fmt.Fprintf(w, " %s│%s      %s│%s %s╰── Root Cause:%s\n", Blue, Reset, Blue, Reset, Red, Reset)
+			fmt.Fprintf(w, " %s│%s      %s│%s     %s\n", Blue, Reset, Blue, Reset, rootCause)
+		} else {
+			// Normal printing for short lines
+			errLineStr := highlightSyntax(strings.ReplaceAll(origLine, "\t", "    "))
+			fmt.Fprintf(w, " %s│%s %s%4d%s %s│%s %s\n", Blue, Reset, Bold, line, Reset, Blue, Reset, errLineStr)
+			
+			padding := "    "
+			if col > 0 {
+				visualCol := 0
+				for i := 0; i < col-1 && i < len(origLine); i++ {
+					if origLine[i] == '\t' {
+						visualCol += 4
+					} else {
+						visualCol++
+					}
+				}
+				padding = strings.Repeat(" ", visualCol)
+			}
+			
+			fmt.Fprintf(w, " %s│%s      %s│%s %s%s^^%s\n", Blue, Reset, Blue, Reset, padding, Red, Reset)
+			fmt.Fprintf(w, " %s│%s      %s│%s %s╰── Root Cause:%s\n", Blue, Reset, Blue, Reset, Red, Reset)
+			fmt.Fprintf(w, " %s│%s      %s│%s     %s\n", Blue, Reset, Blue, Reset, rootCause)
 		}
-		
-		fmt.Fprintf(w, " %s│%s      %s│%s %s%s^^%s\n", Blue, Reset, Blue, Reset, padding, Red, Reset)
-		fmt.Fprintf(w, " %s│%s      %s│%s %s%s╰── Root Cause:%s\n", Blue, Reset, Blue, Reset, padding, Red, Reset)
-		fmt.Fprintf(w, " %s│%s      %s│%s %s    %s\n", Blue, Reset, Blue, Reset, padding, rootCause)
 	} else {
 		fmt.Fprintf(w, " %s│%s      %s│%s %s╰── Root Cause:%s\n", Blue, Reset, Blue, Reset, Red, Reset)
 		fmt.Fprintf(w, " %s│%s      %s│%s     %s\n", Blue, Reset, Blue, Reset, rootCause)

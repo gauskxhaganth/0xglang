@@ -6,7 +6,7 @@ import (
 	"orez/internal/token"
 )
 
-// Uji Peluru Pelacak (Tracer Bullet): Memastikan Parser mampu membaca 'cabinet main'
+// Tracer Bullet Test: Ensure Parser can read 'cabinet main'
 func TestParseCabinet(t *testing.T) {
 	src := []byte("cabinet main")
 	fset := token.NewFileSet()
@@ -16,7 +16,7 @@ func TestParseCabinet(t *testing.T) {
 		t.Fatalf("ParseFile error: %v", err)
 	}
 	if file == nil {
-		t.Fatalf("FASE MERAH: ParseFile mengembalikan nil AST")
+		t.Fatalf("RED PHASE: ParseFile returned nil AST")
 	}
 
 	if file.Name == nil || file.Name.Name != "main" {
@@ -35,7 +35,7 @@ func TestParseDef(t *testing.T) {
 	}
 
 	if len(file.Decls) != 1 {
-		t.Fatalf("FASE MERAH: Expected 1 declaration, got %d", len(file.Decls))
+		t.Fatalf("RED PHASE: Expected 1 declaration, got %d", len(file.Decls))
 	}
 
 	funcDecl, ok := file.Decls[0].(*ast.FuncDecl)
@@ -60,7 +60,7 @@ func TestParseFuncParams(t *testing.T) {
 
 	funcDecl := file.Decls[0].(*ast.FuncDecl)
 	if funcDecl.Type == nil || funcDecl.Type.Params == nil {
-		t.Fatalf("FASE MERAH: FuncDecl.Type atau Params nil")
+		t.Fatalf("RED PHASE: FuncDecl.Type or Params nil")
 	}
 
 	if len(funcDecl.Type.Params.List) != 2 {
@@ -79,7 +79,7 @@ func TestParseBlockAndLet(t *testing.T) {
 
 	funcDecl := file.Decls[0].(*ast.FuncDecl)
 	if funcDecl.Body == nil {
-		t.Fatalf("FASE MERAH: FuncDecl.Body nil (BlockStmt belum ditangani)")
+		t.Fatalf("RED PHASE: FuncDecl.Body nil (BlockStmt not handled yet)")
 	}
 
 	if len(funcDecl.Body.List) != 1 {
@@ -96,7 +96,7 @@ func TestParseBlockAndLet(t *testing.T) {
 	}
 }
 
-// Uji Lapis 4: Pratt Parsing (Math/Logic)
+// Layer 4 Test: Pratt Parsing (Math/Logic)
 func TestPrattParsing(t *testing.T) {
 	src := []byte("cabinet main\n\ndef math()\nlet x = -5 + 10 * 2\nend")
 	fset := token.NewFileSet()
@@ -109,7 +109,7 @@ func TestPrattParsing(t *testing.T) {
 
 	infix, ok := letStmt.Value.(*ast.InfixExpr)
 	if !ok {
-		t.Fatalf("FASE MERAH: Expected InfixExpr, got %T", letStmt.Value)
+		t.Fatalf("RED PHASE: Expected InfixExpr, got %T", letStmt.Value)
 	}
 	if infix.Operator != "+" {
 		t.Errorf("Expected operator '+', got '%s'", infix.Operator)
@@ -132,7 +132,7 @@ func TestPrattParsing(t *testing.T) {
 	}
 }
 
-// Uji Lapis 4: Blok Kendali (if, while)
+// Layer 4 Test: Control Blocks (if, while)
 func TestParseControlBlocks(t *testing.T) {
 	src := []byte("cabinet main\n\ndef logic()\nif x > 0\nend\nwhile y < 10\nend\nend")
 	fset := token.NewFileSet()
@@ -143,23 +143,23 @@ func TestParseControlBlocks(t *testing.T) {
 
 	body := file.Decls[0].(*ast.FuncDecl).Body.List
 	if len(body) != 2 {
-		t.Fatalf("FASE MERAH: Expected 2 statements in body, got %d", len(body))
+		t.Fatalf("RED PHASE: Expected 2 statements in body, got %d", len(body))
 	}
 
 	ifStmt, ok := body[0].(*ast.IfStmt)
 	if !ok {
-		t.Fatalf("FASE MERAH: Expected IfStmt, got %T", body[0])
+		t.Fatalf("RED PHASE: Expected IfStmt, got %T", body[0])
 	}
 	if ifStmt.Cond == nil {
-		t.Fatalf("FASE MERAH: IfStmt.Cond nil")
+		t.Fatalf("RED PHASE: IfStmt.Cond nil")
 	}
 
 	whileStmt, ok := body[1].(*ast.WhileStmt)
 	if !ok {
-		t.Fatalf("FASE MERAH: Expected WhileStmt, got %T", body[1])
+		t.Fatalf("RED PHASE: Expected WhileStmt, got %T", body[1])
 	}
 	if whileStmt.Cond == nil {
-		t.Fatalf("FASE MERAH: WhileStmt.Cond nil")
+		t.Fatalf("RED PHASE: WhileStmt.Cond nil")
 	}
 }
 
@@ -168,6 +168,6 @@ func TestBloodLockIfErr(t *testing.T) {
 	fset := token.NewFileSet()
 	_, err := ParseFile(fset, "", src)
 	if err == nil {
-		t.Fatalf("FASE MERAH: Blood Lock gagal! Parser tidak memblokir 'if err != nil'")
+		t.Fatalf("RED PHASE: Blood Lock failed! Parser did not block 'if err != nil'")
 	}
 }

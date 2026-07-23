@@ -1,0 +1,18 @@
+cabinet main
+
+require "fmt"
+
+type Status Int
+
+type Person struct
+    name String
+    age  Int
+end
+
+
+
+def main()
+    let s Status = 1
+    let p = Person{name: "Alice", age: 30}
+    fmt.Println(p.name, p.age, s)
+end
